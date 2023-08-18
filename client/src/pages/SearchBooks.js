@@ -27,30 +27,29 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  const [saveBook, { error }] = useMutation(SAVE_BOOK, {
+  const [saveBook] = useMutation(SAVE_BOOK, {
     // The below block ensures that as soon as the user saves a book, it appears right away in the saved books page
     update(cache, { data: { saveBook } }) {
-      try {
-        const { me } = cache.readQuery({
-          query: GET_ME,
-        });
+        try {
+            const { me } = cache.readQuery({
+                query: GET_ME,
+            });
 
-        cache.writeQuery({
-          query: GET_ME,
-          data: {
-            me: {
-              ...me,
-              savedBooks: [
-                ...me.savedBooks,
-                saveBook.savedBooks[saveBook.savedBooks.length - 1],
-              ],
-            },
-          },
-        });
-      } catch (e) {}
+            cache.writeQuery({
+                query: GET_ME,
+                data: {
+                    me: {
+                        ...me,
+                        savedBooks: [
+                            ...me.savedBooks,
+                            saveBook.savedBooks[saveBook.savedBooks.length - 1],
+                        ],
+                    },
+                },
+            });
+        } catch (e) {}
     },
-  });
-
+});
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
